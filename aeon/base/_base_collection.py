@@ -10,6 +10,7 @@ from aeon.utils.conversion import (
     resolve_equal_length_inner_type,
     resolve_unequal_length_inner_type,
 )
+from aeon.utils.data_types import CollectionDataTypeTag
 from aeon.utils.validation import check_n_jobs
 from aeon.utils.validation.collection import (
     get_n_cases,
@@ -39,7 +40,7 @@ class BaseCollectionEstimator(BaseAeonEstimator):
         "capability:univariate": True,
         "capability:multivariate": False,
         "capability:unequal_length": False,
-        "X_inner_type": "numpy3D",
+        "X_inner_type": CollectionDataTypeTag.NUMPY_3D.value,
     }
 
     @abstractmethod

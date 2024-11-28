@@ -13,11 +13,12 @@ import numpy as np
 import pandas as pd
 
 from aeon.base._base import BaseAeonEstimator
+from aeon.utils.data_types import SeriesDataTypeTag
 
 # allowed input and internal data types for Series
 VALID_SERIES_INNER_TYPES = [
-    "np.ndarray",
-    "pd.DataFrame",
+    SeriesDataTypeTag.NDARRAY.value,
+    SeriesDataTypeTag.PD_DATAFRAME.value,
 ]
 VALID_SERIES_INPUT_TYPES = [pd.DataFrame, pd.Series, np.ndarray]
 
@@ -59,7 +60,8 @@ class BaseSeriesEstimator(BaseAeonEstimator):
     _tags = {
         "capability:univariate": True,
         "capability:multivariate": False,
-        "X_inner_type": "np.ndarray",  # one of VALID_SERIES_INNER_TYPES
+        "X_inner_type": SeriesDataTypeTag.NDARRAY.value,
+        # one of VALID_SERIES_INNER_TYPES
     }
 
     @abstractmethod

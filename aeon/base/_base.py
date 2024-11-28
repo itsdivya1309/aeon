@@ -6,6 +6,7 @@ __all__ = ["BaseAeonEstimator"]
 import inspect
 from abc import ABC, abstractmethod
 from copy import deepcopy
+from enum import Enum
 
 from sklearn import clone
 from sklearn.base import BaseEstimator
@@ -163,6 +164,10 @@ class BaseAeonEstimator(BaseEstimator, ABC):
             # Need the if here because classes might not have non-default tags
             if hasattr(parent_class, "_tags"):
                 more_tags = parent_class._tags
+                more_tags = {
+                    key.value if isinstance(key, Enum) else key: value
+                    for key, value in more_tags.items()
+                }
                 collected_tags.update(more_tags)
 
         return deepcopy(collected_tags)
@@ -207,6 +212,10 @@ class BaseAeonEstimator(BaseEstimator, ABC):
         """
         collected_tags = cls.get_class_tags()
 
+        # If tag_name is an Enum, use its value
+        if isinstance(tag_name, Enum):
+            tag_name = tag_name.value
+
         tag_value = collected_tags.get(tag_name, tag_value_default)
 
         if raise_error and tag_name not in collected_tags.keys():
@@ -229,6 +238,13 @@ class BaseAeonEstimator(BaseEstimator, ABC):
         """
         collected_tags = self.get_class_tags()
         collected_tags.update(self._tags_dynamic)
+
+        # If the tags in _tags_dynamic are enums, convert keys to their values
+        collected_tags = {
+            key.value if isinstance(key, Enum) else key: value
+            for key, value in collected_tags.items()
+        }
+
         return deepcopy(collected_tags)
 
     def get_tag(self, tag_name, raise_error=True, tag_value_default=None):
@@ -268,6 +284,10 @@ class BaseAeonEstimator(BaseEstimator, ABC):
         """
         collected_tags = self.get_tags()
 
+        # If tag_name is an Enum, use its value
+        if isinstance(tag_name, Enum):
+            tag_name = tag_name.value
+
         tag_value = collected_tags.get(tag_name, tag_value_default)
 
         if raise_error and tag_name not in collected_tags.keys():
@@ -290,6 +310,17 @@ class BaseAeonEstimator(BaseEstimator, ABC):
             Reference to self.
         """
         tag_update = deepcopy(tag_dict)
+
+        # Ensure the keys are enum members and get their value if they are enums
+        for tag_name, tag_value in tag_update.items():
+            if isinstance(tag_name, Enum):
+                tag_update[tag_name.value] = tag_value
+            # Optional: raise an error if invalid tag_name (not an Enum or string)
+            elif not isinstance(tag_name, str):
+                raise ValueError(
+                    f"Invalid tag name type: {type(tag_name)}. Expected string or Enum."
+                )
+
         self._tags_dynamic.update(tag_update)
         return self
 

@@ -2,7 +2,7 @@
 
 This contains all functions to convert supported collection data types.
 
-String identifier meanings (from aeon.utils.conversion import COLLECTIONS_DATA_TYPES) :
+String identifier meanings (from aeon.utils.conversion import CollectionDataTypeTag) :
 numpy3D : 3D numpy array of time series shape (n_cases,  n_channels, n_timepoints)
 np-list : list of 2D numpy arrays shape (n_channels, n_timepoints_i)
 df-list : list of 2D pandas dataframes shape (n_channels, n_timepoints_i)
@@ -22,7 +22,7 @@ import numpy as np
 import pandas as pd
 from numba.typed import List as NumbaList
 
-from aeon.utils.data_types import COLLECTIONS_DATA_TYPES
+from aeon.utils.data_types import CollectionDataTypeTag
 from aeon.utils.validation.collection import _equal_length, get_type
 
 
@@ -313,8 +313,8 @@ def _from_pd_multiindex_to_pd_wide(X):
 
 convert_dictionary = dict()
 # assign identity function to type conversion to self
-for x in COLLECTIONS_DATA_TYPES:
-    convert_dictionary[(x, x)] = convert_identity
+for x in CollectionDataTypeTag:
+    convert_dictionary[(x.value, x.value)] = convert_identity
 # numpy3D -> *
 convert_dictionary[("numpy3D", "np-list")] = _from_numpy3d_to_np_list
 convert_dictionary[("numpy3D", "df-list")] = _from_numpy3d_to_df_list
@@ -356,14 +356,14 @@ convert_dictionary[("pd-multiindex", "numpy2D")] = _from_pd_multiindex_to_numpy2
 def convert_collection(X, output_type):
     """Convert from one of collections compatible data structure to another.
 
-    See :obj:`aeon.utils.conversion.COLLECTIONS_DATA_TYPE` for the list.
+    See :obj:`aeon.utils.conversion.CollectionDataTypeTag` for the list.
 
     Parameters
     ----------
     X : collection
         The input collection to be converted.
     output_type : string
-        Name of the target collection data type, must be one of COLLECTIONS_DATA_TYPES.
+        Name of the target collection data type, must be one of CollectionDataTypeTag.
 
     Returns
     -------
@@ -392,55 +392,63 @@ def convert_collection(X, output_type):
         raise TypeError(
             f"Attempting to convert from {input_type} to {output_type} "
             f"but this is not a valid conversion. See "
-            f"aeon.utils.conversion.COLLECTIONS_DATA_TYPE "
+            f"aeon.utils.conversion.CollectionDataTypeTag "
             f"for the list of valid collections"
         )
     return convert_dictionary[(input_type, output_type)](X)
 
 
-def resolve_equal_length_inner_type(inner_types: Sequence[str]) -> str:
+def resolve_equal_length_inner_type(
+    inner_types: Sequence[CollectionDataTypeTag],
+) -> CollectionDataTypeTag:
     """Hierarchy of preference for internal supported types for equal length.
 
     Parameters
     ----------
-    inner_types: Sequence[str]
+    inner_types: Sequence[CollectionDataType]
         The inner types to be resolved to a single type.
     """
-    if "numpy3D" in inner_types:
-        return "numpy3D"
-    if "np-list" in inner_types:
-        return "np-list"
-    if "numpy2D" in inner_types:
-        return "numpy2D"
-    if "pd-multiindex" in inner_types:
-        return "pd-multiindex"
-    if "df-list" in inner_types:
-        return "df-list"
-    if "pd-wide" in inner_types:
-        return "pd-wide"
+    if CollectionDataTypeTag.NUMPY_3D in inner_types:
+        return CollectionDataTypeTag.NUMPY_3D
+    if CollectionDataTypeTag.NP_LIST in inner_types:
+        return CollectionDataTypeTag.NP_LIST
+    if CollectionDataTypeTag.NUMPY_2D in inner_types:
+        return CollectionDataTypeTag.NUMPY_2D
+    if CollectionDataTypeTag.PD_MULTIINDEX in inner_types:
+        return CollectionDataTypeTag.PD_MULTIINDEX
+    if CollectionDataTypeTag.DF_LIST in inner_types:
+        return CollectionDataTypeTag.DF_LIST
+    if CollectionDataTypeTag.PD_WIDE in inner_types:
+        return CollectionDataTypeTag.PD_WIDE
+
     raise ValueError(
-        f"Error, no valid inner types in {inner_types} must be one of "
-        f"{COLLECTIONS_DATA_TYPES}"
+        f"Error, no valid inner types in {inner_types}. Must be one of "
+        f"{[e.value for e in CollectionDataTypeTag]}"
     )
 
 
-def resolve_unequal_length_inner_type(inner_types: Sequence[str]) -> str:
+def resolve_unequal_length_inner_type(
+    inner_types: Sequence[CollectionDataTypeTag],
+) -> CollectionDataTypeTag:
     """Hierarchy of preference for internal supported types for unequal length.
 
     Parameters
     ----------
-    inner_types: Sequence[str]
+    inner_types: Sequence[CollectionDataType]
         The inner types to be resolved to a single type.
     """
-    if "np-list" in inner_types:
-        return "np-list"
-    if "df-list" in inner_types:
-        return "df-list"
-    if "pd-multiindex" in inner_types:
-        return "pd-multiindex"
+    if CollectionDataTypeTag.NP_LIST in inner_types:
+        return CollectionDataTypeTag.NP_LIST
+    if CollectionDataTypeTag.DF_LIST in inner_types:
+        return CollectionDataTypeTag.DF_LIST
+    if CollectionDataTypeTag.PD_MULTIINDEX in inner_types:
+        return CollectionDataTypeTag.PD_MULTIINDEX
+
     raise ValueError(
-        f"Error, no valid inner types for unequal series in {inner_types} "
-        f"must be np-list, df-list or pd-multiindex"
+        f"Error, no valid inner types for unequal series in {inner_types}. "
+        f"Must be one of ["
+        f"{CollectionDataTypeTag.NP_LIST}, {CollectionDataTypeTag.DF_LIST}, "
+        f"{CollectionDataTypeTag.PD_MULTIINDEX}]"
     )
 
 

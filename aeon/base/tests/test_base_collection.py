@@ -14,11 +14,11 @@ from aeon.testing.testing_data import (
     UNEQUAL_LENGTH_MULTIVARIATE_CLASSIFICATION,
     UNEQUAL_LENGTH_UNIVARIATE_CLASSIFICATION,
 )
-from aeon.utils.data_types import COLLECTIONS_DATA_TYPES
+from aeon.utils.data_types import CollectionDataTypeTag
 from aeon.utils.validation import get_type
 
 
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_get_metadata(data):
     """Test get meta data."""
     # equal length univariate
@@ -151,8 +151,8 @@ def test_check_X():
         dummy1._check_X(X)
 
 
-@pytest.mark.parametrize("internal_type", COLLECTIONS_DATA_TYPES)
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("internal_type", [tag.value for tag in CollectionDataTypeTag])
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_convert_X(internal_type, data):
     """Test conversion function.
 
@@ -211,7 +211,7 @@ def test_convert_X(internal_type, data):
             assert get_type(X2) == "np-list" if data != internal_type else internal_type
 
 
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_preprocess_collection(data):
     """Test the functionality for preprocessing fit."""
     data = EQUAL_LENGTH_UNIVARIATE_CLASSIFICATION[data]["train"][0]

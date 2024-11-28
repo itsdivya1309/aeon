@@ -17,7 +17,32 @@ sub-dictionary has the following items:
 __maintainer__ = ["MatthewMiddlehurst"]
 __all__ = ["ESTIMATOR_TAGS"]
 
-from aeon.utils.data_types import COLLECTIONS_DATA_TYPES, SERIES_DATA_TYPES
+from enum import Enum
+
+from aeon.utils.data_types import CollectionDataTypeTag, SeriesDataTypeTag
+
+
+class AlgorithmTypeTag(Enum):
+    DICTIONARY = "dictionary"
+    DISTANCE = "distance"
+    FEATURE = "feature"
+    HYBRID = "hybrid"
+    INTERVAL = "interval"
+    CONVOLUTION = "convolution"
+    SHAPELET = "shapelet"
+    DEEPLEARNING = "deeplearning"
+
+
+class InputDataTypeTag(Enum):
+    SERIES = "Series"
+    COLLECTION = "Collection"
+
+
+class OutputDataTypeTag(Enum):
+    TABULAR = "Tabular"
+    SERIES = "Series"
+    COLLECTION = "Collection"
+
 
 ESTIMATOR_TAGS = {
     # all estimators
@@ -48,7 +73,11 @@ ESTIMATOR_TAGS = {
     "X_inner_type": {
         "class": "estimator",
         "type": [
-            ("list||str", COLLECTIONS_DATA_TYPES + SERIES_DATA_TYPES),
+            (
+                "list||str",
+                [tag.value for tag in CollectionDataTypeTag]
+                + [tag.value for tag in SeriesDataTypeTag],
+            ),
         ],
         "description": "What data structure(s) the estimator uses internally for "
         "fit/predict.",
@@ -56,7 +85,7 @@ ESTIMATOR_TAGS = {
     "y_inner_type": {
         "class": "forecaster",
         "type": [
-            ("list||str", SERIES_DATA_TYPES),
+            ("list||str", [tag.value for tag in SeriesDataTypeTag]),
         ],
         "description": "What data structure(s) the estimator uses internally for "
         "fit/predict.",
@@ -66,16 +95,7 @@ ESTIMATOR_TAGS = {
         "type": [
             (
                 "str",
-                [
-                    "dictionary",
-                    "distance",
-                    "feature",
-                    "hybrid",
-                    "interval",
-                    "convolution",
-                    "shapelet",
-                    "deeplearning",
-                ],
+                [tag.value for tag in AlgorithmTypeTag],
             ),
             None,
         ],
@@ -156,14 +176,14 @@ ESTIMATOR_TAGS = {
     },
     "input_data_type": {
         "class": "transformer",
-        "type": ("str", ["Series", "Collection"]),
+        "type": ("str", [tag.value for tag in InputDataTypeTag]),
         "description": "The input abstract data type of the transformer, input X. "
         "Series indicates a single series input, Collection indicates a collection of "
         "time series.",
     },
     "output_data_type": {
         "class": "transformer",
-        "type": ("str", ["Tabular", "Series", "Collection"]),
+        "type": ("str", [tag.value for tag in OutputDataTypeTag]),
         "description": "The output abstract data type of the transformer output, the "
         "transformed X. Tabular indicates 2D output where rows are cases and "
         "unordered attributes are columns. Series indicates a single series output "
