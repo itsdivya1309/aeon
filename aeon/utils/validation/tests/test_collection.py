@@ -13,7 +13,7 @@ from aeon.testing.data_generation import (
     make_example_3d_numpy_list,
 )
 from aeon.testing.testing_data import EQUAL_LENGTH_UNIVARIATE_CLASSIFICATION
-from aeon.utils.data_types import COLLECTIONS_DATA_TYPES
+from aeon.utils.data_types import CollectionDataTypeTag
 from aeon.utils.validation.collection import (
     _is_numpy_list_multivariate,
     _is_pd_wide,
@@ -23,7 +23,7 @@ from aeon.utils.validation.collection import (
 )
 
 
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_is_pd_wide(data):
     """Test _is_pd_wide function for different datatypes."""
     if data == "pd-wide":

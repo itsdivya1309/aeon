@@ -24,7 +24,7 @@ from aeon.testing.utils.estimator_checks import (
     _assert_predict_probabilities,
     _get_tag,
 )
-from aeon.utils.data_types import COLLECTIONS_DATA_TYPES
+from aeon.utils.data_types import CollectionDataTypeTag
 from aeon.utils.validation import get_n_cases
 
 
@@ -152,9 +152,11 @@ def check_classifier_overrides_and_tags(estimator_class):
     # Test valid tag for X_inner_type
     X_inner_type = estimator_class.get_class_tag(tag_name="X_inner_type")
     if isinstance(X_inner_type, str):
-        assert X_inner_type in COLLECTIONS_DATA_TYPES
+        assert X_inner_type in [tag.value for tag in CollectionDataTypeTag]
     else:  # must be a list
-        assert all([t in COLLECTIONS_DATA_TYPES for t in X_inner_type])
+        assert all(
+            [t in [tag.value for tag in CollectionDataTypeTag] for t in X_inner_type]
+        )
 
     # one of X_inner_types must be capable of storing unequal length
     if estimator_class.get_class_tag("capability:unequal_length"):

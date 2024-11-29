@@ -12,7 +12,7 @@ from aeon.testing.testing_data import (
     EQUAL_LENGTH_UNIVARIATE_REGRESSION,
     UNEQUAL_LENGTH_UNIVARIATE_REGRESSION,
 )
-from aeon.utils.data_types import COLLECTIONS_DATA_TYPES
+from aeon.utils.data_types import CollectionDataTypeTag
 
 
 class _TestRegressor(BaseRegressor):
@@ -116,7 +116,7 @@ def test__check_y():
         reg._check_y(y, 5)
 
 
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_unequal_length_input(data):
     """Test with unequal length failures and passes."""
     if data in UNEQUAL_LENGTH_UNIVARIATE_REGRESSION.keys():
@@ -129,7 +129,7 @@ def test_unequal_length_input(data):
         _assert_fit_predict(dummy, X, y)
 
 
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_equal_length_input(data):
     """Test with unequal length failures and passes."""
     dummy = _TestRegressor()

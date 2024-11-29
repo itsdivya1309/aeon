@@ -15,7 +15,7 @@ from aeon.testing.testing_data import (
     EQUAL_LENGTH_UNIVARIATE_CLASSIFICATION,
     UNEQUAL_LENGTH_UNIVARIATE_CLASSIFICATION,
 )
-from aeon.utils.data_types import COLLECTIONS_DATA_TYPES
+from aeon.utils.data_types import CollectionDataTypeTag
 
 __maintainer__ = []
 
@@ -147,7 +147,7 @@ def test_unequal_length_input(data):
     _assert_fit_and_predict(dummy, X, y)
 
 
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_univariate_equal_length_input(data):
     """Test with unequal length failures and passes."""
     X = EQUAL_LENGTH_UNIVARIATE_CLASSIFICATION[data]["train"][0]

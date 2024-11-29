@@ -23,7 +23,7 @@ from aeon.utils.conversion._convert_collection import (
     resolve_equal_length_inner_type,
     resolve_unequal_length_inner_type,
 )
-from aeon.utils.data_types import COLLECTIONS_DATA_TYPES
+from aeon.utils.data_types import CollectionDataTypeTag
 from aeon.utils.validation.collection import (
     _equal_length,
     get_n_cases,
@@ -34,8 +34,8 @@ from aeon.utils.validation.collection import (
 )
 
 
-@pytest.mark.parametrize("input_data", COLLECTIONS_DATA_TYPES)
-@pytest.mark.parametrize("output_data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("input_data", [tag.value for tag in CollectionDataTypeTag])
+@pytest.mark.parametrize("output_data", [tag.value for tag in CollectionDataTypeTag])
 def test_convert_collection(input_data, output_data):
     """Test all valid and invalid conversions."""
     # All should work with univariate equal length
@@ -76,7 +76,7 @@ def test_convert_collection(input_data, output_data):
                 )
 
 
-@pytest.mark.parametrize("input_data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("input_data", [tag.value for tag in CollectionDataTypeTag])
 def test_convert_df_list(input_data):
     """Test that df list is correctly transposed."""
     X = convert_collection(
@@ -113,25 +113,25 @@ def test_resolve_unequal_length_inner_type():
     assert X == "np-list"
 
 
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_get_n_cases(data):
     """Test getting the number of cases."""
     assert get_n_cases(EQUAL_LENGTH_UNIVARIATE_CLASSIFICATION[data]["train"][0]) == 10
 
 
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_get_type(data):
     """Test getting the type."""
     assert get_type(EQUAL_LENGTH_UNIVARIATE_CLASSIFICATION[data]["train"][0]) == data
 
 
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_equal_length(data):
     """Test if equal length series correctly identified."""
     assert _equal_length(EQUAL_LENGTH_UNIVARIATE_CLASSIFICATION[data]["train"][0], data)
 
 
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_is_equal_length(data):
     """Test if equal length series correctly identified."""
     assert is_equal_length(EQUAL_LENGTH_UNIVARIATE_CLASSIFICATION[data]["train"][0])
@@ -153,7 +153,7 @@ def test_is_unequal_length(data):
     )
 
 
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_has_missing(data):
     """Test if missing values are correctly identified."""
     assert not has_missing(EQUAL_LENGTH_UNIVARIATE_CLASSIFICATION[data]["train"][0])
@@ -162,7 +162,7 @@ def test_has_missing(data):
     assert has_missing(X)
 
 
-@pytest.mark.parametrize("data", COLLECTIONS_DATA_TYPES)
+@pytest.mark.parametrize("data", [tag.value for tag in CollectionDataTypeTag])
 def test_is_univariate(data):
     """Test if univariate series are correctly identified."""
     assert is_univariate(EQUAL_LENGTH_UNIVARIATE_CLASSIFICATION[data]["train"][0])

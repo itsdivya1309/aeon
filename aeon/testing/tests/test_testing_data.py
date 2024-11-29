@@ -20,7 +20,7 @@ from aeon.testing.testing_data import (
     UNEQUAL_LENGTH_UNIVARIATE_REGRESSION,
     UNEQUAL_LENGTH_UNIVARIATE_SIMILARITY_SEARCH,
 )
-from aeon.utils.data_types import COLLECTIONS_DATA_TYPES
+from aeon.utils.data_types import CollectionDataTypeTag
 from aeon.utils.validation import (
     has_missing,
     is_collection,
@@ -32,7 +32,7 @@ from aeon.utils.validation import (
 
 def test_datatype_exists():
     """Check that the basic testing data case has all data types."""
-    for data in COLLECTIONS_DATA_TYPES:
+    for data in [tag.value for tag in CollectionDataTypeTag]:
         assert data in EQUAL_LENGTH_UNIVARIATE_CLASSIFICATION
         assert data in EQUAL_LENGTH_UNIVARIATE_REGRESSION
 

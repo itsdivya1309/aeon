@@ -1,14 +1,14 @@
 """Identity transformer."""
 
 from aeon.transformations.collection import BaseCollectionTransformer
-from aeon.utils.data_types import COLLECTIONS_DATA_TYPES
+from aeon.utils.data_types import CollectionDataTypeTag
 
 
 class CollectionId(BaseCollectionTransformer):
     """Identity transformer, returns data unchanged in transform/inverse_transform."""
 
     _tags = {
-        "X_inner_type": COLLECTIONS_DATA_TYPES,
+        "X_inner_type": [tag.value for tag in CollectionDataTypeTag],
         "fit_is_empty": True,
         "capability:inverse_transform": True,
         "capability:multivariate": True,

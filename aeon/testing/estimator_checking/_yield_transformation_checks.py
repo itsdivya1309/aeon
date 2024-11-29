@@ -20,7 +20,7 @@ from aeon.testing.utils.deep_equals import deep_equals
 from aeon.testing.utils.estimator_checks import _run_estimator_method
 from aeon.transformations.collection.channel_selection.base import BaseChannelSelector
 from aeon.transformations.series import BaseSeriesTransformer
-from aeon.utils.data_types import COLLECTIONS_DATA_TYPES
+from aeon.utils.data_types import CollectionDataTypeTag
 
 
 def _yield_transformation_checks(estimator_class, estimator_instances, datatypes):
@@ -130,7 +130,7 @@ def check_transformer_overrides_and_tags(estimator_class):
     dtypes = (
         VALID_SERIES_INNER_TYPES
         if issubclass(estimator_class, BaseSeriesTransformer)
-        else COLLECTIONS_DATA_TYPES
+        else [tag.value for tag in CollectionDataTypeTag]
     )
 
     # Test valid tag for X_inner_type
